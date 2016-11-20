@@ -1,6 +1,133 @@
+#!/usr/bin/python
+
 from itty import *
 import urllib2
 import json
+import requests
+requests.packages.urllib3.disable_warnings()
+from requests.auth import HTTPBasicAuth
+import base64
+import random 
+from tinydb import TinyDB, Query
+
+def randombear():
+    db = TinyDB('beardb.json')
+    bears = db.all()
+    randomurl = random.choice(bears)
+    return randomurl['url'] 
+
+def countbears():
+    db = TinyDB('beardb.json')
+    bears = db.all()
+    bearcount = len(bears)
+    return bearcount
+
+def merakigetdevices():
+
+    url = 'https://n131.meraki.com/api/v0/networks/L_636696397319504780/devices'
+    headers = {'X-Cisco-Meraki-API-Key': '158adab9d93235d072e3258a3644d3af3b346e21'}
+    devicemodel = []
+    deviceserial = []
+    r = requests.get(url, headers=headers)
+
+    binary = r.content
+    output = json.loads(binary)
+
+    numdevices = len(output)
+    for x in range(0, numdevices):
+        devicemodel.append(output[x]["model"])
+        deviceserial.append(output[x]["serial"])
+    return devicemodel,deviceserial
+
+def cmxgetclients():
+
+   storedCredentials = True
+   username = 'learning'
+   password = 'learning'
+   restURL = 'https://msesandbox.cisco.com:8081/api/location/v2/clients/count'
+
+   if not storedCredentials:
+           username = raw_input("Username: ")
+           password = raw_input("Password: ")
+           storedCredentials = True
+
+           print("----------------------------------")
+           print("Authentication string: "+ username+":"+password)
+           print("Base64 encoded auth string: " + base64.b64encode(username+":"+password))
+           print("----------------------------------")
+
+   try:
+           request = requests.get(
+           url = restURL,
+           auth = HTTPBasicAuth(username,password),
+           verify=False)
+
+           parsed = json.loads(request.content)
+           clientcount = parsed['count']
+           return clientcount
+   except requests.exceptions.RequestException as e:
+           print(e)
+
+def cmxgetbeacons():
+
+   storedCredentials = True
+   username = 'learning'
+   password = 'learning'
+   restURL = 'https://msesandbox.cisco.com:8081/api/location/v1/beacon/count'
+
+   if not storedCredentials:
+           username = raw_input("Username: ")
+           password = raw_input("Password: ")
+           storedCredentials = True
+
+           print("----------------------------------")
+           print("Authentication string: "+ username+":"+password)
+           print("Base64 encoded auth string: " + base64.b64encode(username+":"+password))
+           print("----------------------------------")
+
+   try:
+           request = requests.get(
+           url = restURL,
+           auth = HTTPBasicAuth(username,password),
+           verify=False)
+
+           parsed = json.loads(request.content)
+           beaconcount = parsed
+           return beaconcount
+   except requests.exceptions.RequestException as e:
+           print(e)
+
+
+def cmxgetclientmac():
+
+   storedCredentials = True
+   username = 'learning'
+   password = 'learning'
+   restURL = 'https://msesandbox.cisco.com:8081/api/location/v2/clients'
+   clientmac = []
+   if not storedCredentials:
+           username = raw_input("Username: ")
+           password = raw_input("Password: ")
+           storedCredentials = True
+
+           print("----------------------------------")
+           print("Authentication string: "+ username+":"+password)
+           print("Base64 encoded auth string: " + base64.b64encode(username+":"+password))
+           print("----------------------------------")
+
+   try:
+           request = requests.get(
+           url = restURL,
+           auth = HTTPBasicAuth(username,password),
+           verify=False)
+
+           parsed = json.loads(request.content)
+           clientcount = len(parsed)
+           for x in range(0, clientcount):
+               clientmac.append(parsed[x]["macAddress"])
+           return clientmac
+   except requests.exceptions.RequestException as e:
+           print(e)
 
 def sendSparkGET(url):
     """
@@ -42,29 +169,61 @@ def index(request):
     print webhook['data']['id']
     result = sendSparkGET('https://api.ciscospark.com/v1/messages/{0}'.format(webhook['data']['id']))
     result = json.loads(result)
-    msg = None
+    msg = ''
     if webhook['data']['personEmail'] != bot_email:
         in_message = result.get('text', '').lower()
         in_message = in_message.replace(bot_name, '')
-        if 'batman' in in_message or "whoareyou" in in_message:
-            msg = "I'm Batman!"
-        elif 'batcave' in in_message:
-            message = result.get('text').split('batcave')[1].strip(" ")
-            if len(message) > 0:
-                msg = "The Batcave echoes, '{0}'".format(message)
-            else:
-                msg = "The Batcave is silent..."
-        elif 'batsignal' in in_message:
-            print "NANA NANA NANA NANA"
+        if 'databears' in in_message or "favorite" in in_message:
+            msg = "I Love Databears!"
+        elif 'what do we do?' in in_message:
+            msg = "We Hunt We Fight We WIN!"
+        elif 'jimmyjams' in in_message:
+            msg = "Im all about the Jimmy Jams!"
+        elif 'merakidevices' in in_message:
+            devicemodel,deviceserial = merakigetdevices()
+            for i in range(0, len(devicemodel)):
+                msg += 'Model:'
+                msg += devicemodel[i]
+                msg += u'\t'
+                msg += 'Serial:'
+                msg += deviceserial[i]                  
+                msg += u'\n'
+        elif 'cmxactiveclients' in in_message:
+            clientcount = cmxgetclients()
+            msg = "Active Clients for DevNetCampus>DevNetBuilding>DevNetZone>Zone1: %s" % clientcount
+        elif 'cmxactivebeacons' in in_message:
+            beaconcount = cmxgetbeacons()
+            msg = "Active Beacons for DevNetCampus>DevNetBuilding>DevNetZone>Zone1: %s" % beaconcount
+        elif 'cmxclientmac' in in_message:
+            clientmac = cmxgetclientmac()
+            for i in clientmac:
+                msg += i
+                msg += u'\n'
+        elif 'help' in in_message:
+            msg = "I only do pre sales you should call Cisco TAC at 1 800 553 2447"
+        elif 'howmanybears' in in_message:
+            bearcount = countbears()
+            msg = bearcount
+        elif 'randombear' in in_message:
+            randomurl = randombear()
+            sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": randomurl})
+        elif 'dancingbears' in in_message:
+            print "Databears get Funky!"
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": bat_signal})
+        elif 'hulabears' in in_message:
+            print "Databears get Funky!"
+            sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": hula_bears})
         if msg != None:
             print msg
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
     return "true"
 
+
+
 ####CHANGE THESE VALUES#####
-bot_email = "yourbot@sparkbot.io"
-bot_name = "yourBotDisplayName"
-bearer = "BOT BEARER TOKEN HERE"
-bat_signal  = "https://upload.wikimedia.org/wikipedia/en/c/c6/Bat-signal_1989_film.jpg"
+bot_email = "johnmcbot@sparkbot.io"
+bot_name = "JohnMcBot"
+bearer = "MGYzYTI4MWEtYWZiNi00MzAzLWIxZGYtZmE3MWUyOTg4YmUxYjg2MDM2NTgtZWFk"
+bat_signal  = "http://www.gifbin.com/bin/163563561.gif"
+hula_bears = "http://i.imgur.com/Bz2n7KR.gif"
 run_itty(server='wsgiref', host='0.0.0.0', port=10010)
