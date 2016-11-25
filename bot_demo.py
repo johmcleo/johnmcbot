@@ -10,6 +10,23 @@ import base64
 import random 
 from tinydb import TinyDB, Query
 
+def eventbriteorder():
+      response = requests.get(
+         "https://www.eventbriteapi.com/v3/users/me/owned_events/?status=live",
+         headers = {
+             "Authorization": "Bearer JX5ONBLMAVZ7EN2HQTPT",
+         },
+         verify = True,  # Verify SSL certificate
+     )
+      data = response.json()
+      events = len(data['events'])
+      eventid = []
+      eventname = []
+      for i in range(0, events):
+        eventid.append(data['events'][i]['id'])
+        eventname.append(data['events'][i]['name']['text'])
+      return eventid,eventname
+
 def randombear():
     db = TinyDB('beardb.json')
     bears = db.all()
@@ -175,6 +192,31 @@ def index(request):
         in_message = in_message.replace(bot_name, '')
         if 'databears' in in_message or "favorite" in in_message:
             msg = "I Love Databears!"
+        elif 'trainingdaystatus' in in_message:
+            eventid,eventname = eventbriteorder()
+            for i in range(0, len(eventid)):
+                for x in eventname:
+                    response = requests.get(
+                    "https://www.eventbriteapi.com/v3/reports/attendees/?event_ids=%s" % (eventid[i], ),
+                    headers = {
+                    "Authorization": "Bearer JX5ONBLMAVZ7EN2HQTPT",
+                    },
+                    verify = True,
+                    )
+                data = response.json()
+                msg += 'Event Name:'
+                msg += eventname[i]
+                msg += u'\n'
+                msg += 'Event ID:'
+                msg += eventid[i]
+                msg += u'\n'
+                msg += 'Total Attendees:'
+                msg += str(data['totals']['num_attendees'])
+                msg += u'\n'
+                msg += 'Total Orders:'                  
+                msg += str(data['totals']['num_orders'])
+                msg += u'\n'
+                msg += u'\n'
         elif 'what do we do?' in in_message:
             msg = "We Hunt We Fight We WIN!"
         elif 'jimmyjams' in in_message:
@@ -226,4 +268,4 @@ bot_name = "JohnMcBot"
 bearer = "MGYzYTI4MWEtYWZiNi00MzAzLWIxZGYtZmE3MWUyOTg4YmUxYjg2MDM2NTgtZWFk"
 bat_signal  = "http://www.gifbin.com/bin/163563561.gif"
 hula_bears = "http://i.imgur.com/Bz2n7KR.gif"
-run_itty(server='wsgiref', host='0.0.0.0', port=10010)
+run_itty(server='wsgiref', host='0.0.0.0', port=10011)
