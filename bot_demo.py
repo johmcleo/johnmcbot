@@ -271,4 +271,4 @@ bearer = "MGYzYTI4MWEtYWZiNi00MzAzLWIxZGYtZmE3MWUyOTg4YmUxYjg2MDM2NTgtZWFk"
 bat_signal  = "http://www.gifbin.com/bin/163563561.gif"
 happy_bday = "http://bestanimations.com/Holidays/Birthday/funnybithdaygifs/funny-star-wars-darth-vaderdancing--happy-birthday-gif.gif"
 hula_bears = "http://i.imgur.com/Bz2n7KR.gif"
-run_itty(server='wsgiref', host='0.0.0.0', port=10011)
+run_itty(server='wsgiref', host='0.0.0.0', port=10010)
