@@ -255,6 +255,8 @@ def index(request):
         elif 'hulabears' in in_message:
             print "Databears get Funky!"
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": hula_bears})
+        elif 'sharonbday' in in_message:
+            sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": happy_bday})
         if msg != None:
             print msg
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
@@ -267,5 +269,6 @@ bot_email = "johnmcbot@sparkbot.io"
 bot_name = "JohnMcBot"
 bearer = "MGYzYTI4MWEtYWZiNi00MzAzLWIxZGYtZmE3MWUyOTg4YmUxYjg2MDM2NTgtZWFk"
 bat_signal  = "http://www.gifbin.com/bin/163563561.gif"
+happy_bday = "http://bestanimations.com/Holidays/Birthday/funnybithdaygifs/funny-star-wars-darth-vaderdancing--happy-birthday-gif.gif"
 hula_bears = "http://i.imgur.com/Bz2n7KR.gif"
 run_itty(server='wsgiref', host='0.0.0.0', port=10011)
