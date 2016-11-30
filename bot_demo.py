@@ -218,7 +218,7 @@ def index(request):
                 msg += u'\n'
                 msg += u'\n'
         elif 'what do we do?' in in_message:
-            msg = "We Hunt We Fight We WIN!"
+            msg = "<h1>We Hunt We Fight We WIN!<h1>"
         elif 'jimmyjams' in in_message:
             msg = "Im all about the Jimmy Jams!"
         elif 'merakidevices' in in_message:
