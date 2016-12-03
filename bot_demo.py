@@ -259,6 +259,21 @@ def index(request):
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": happy_bday})
         elif 'snorlax' in in_message:
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": snorlax})
+        elif 'sparkboard' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": sparkboard})
+             msg = "You really need to collaborate on Spark Board, this is what you get with Surface Hub or Google Jamboard"
+        elif 'laserfocus' in in_message: 
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": laserfocus})
+        elif 'manatee' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": manatee})
+        elif 'raiders' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": raiders})
+        elif 'touchdown' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": touchdown})
+        elif 'osupokes' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": osu1})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": osu2})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": touchdown})
         if msg != None:
             print msg
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
@@ -274,4 +289,11 @@ bat_signal  = "http://www.gifbin.com/bin/163563561.gif"
 happy_bday = "http://bestanimations.com/Holidays/Birthday/funnybithdaygifs/funny-star-wars-darth-vaderdancing--happy-birthday-gif.gif"
 hula_bears = "http://i.imgur.com/Bz2n7KR.gif"
 snorlax = "https://media.giphy.com/media/11g5IteO9JjpgA/giphy.gif"
+sparkboard = "https://media.giphy.com/media/14wPFMQBn66xwI/giphy.gif"
+laserfocus = "https://media.giphy.com/media/ruCg20L6H72TK/giphy.gif"
+manatee = "https://media.giphy.com/media/6kbx5578gUAJa/giphy.gif"
+raiders = "https://media.giphy.com/media/3ofT5yXYtGFv7G3I5O/giphy.gif"
+touchdown = "https://media.giphy.com/media/1434lafyjzMk1y/source.gif"
+osu1 = "https://media.giphy.com/media/291XZD4vUtiuY/giphy.gif"
+osu2 = "https://media.giphy.com/media/14skUVRkuqgekg/source.gif"
 run_itty(server='wsgiref', host='0.0.0.0', port=10010)
