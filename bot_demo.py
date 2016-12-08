@@ -217,6 +217,29 @@ def index(request):
                 msg += str(data['totals']['num_orders'])
                 msg += u'\n'
                 msg += u'\n'
+        elif 'trainingdayreg' in in_message:
+            eventid,eventname = eventbriteorder()
+            msg += "<h1>Training Day Registrations</h1>"
+            for i in range(0, len(eventid)):
+                    response = requests.get(
+                    "https://www.eventbriteapi.com/v3/events/%s/orders" % (eventid[i], ),
+                    headers = {
+                    "Authorization": "Bearer JX5ONBLMAVZ7EN2HQTPT",
+                    },
+                    verify = True,
+                    )
+                    data = response.json()
+                    numorders = len(data['orders'])
+                    msg += "<h2>"
+                    msg += eventname[i]
+                    msg += "</h2>"
+                    msg += u'\n\n'
+                    for i in range(0, numorders):
+                        msg += 'Name:'
+                        msg += data['orders'][i]['name']
+                        msg += u'\n'
+                        msg += data['orders'][i]['email']
+                        msg += u'\n\n'
         elif 'what do we do?' in in_message:
             msg = "<h1>We Hunt We Fight We WIN!<h1>"
         elif 'jimmyjams' in in_message:
@@ -274,6 +297,12 @@ def index(request):
              sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": osu1})
              sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": osu2})
              sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": touchdown})
+        elif 'micdrop' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": micdrop})
+        elif 'agile' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": agile}) 
+        elif 'ghettoblaster' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": ghettoblaster})
         if msg != None:
             print msg
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
@@ -296,4 +325,7 @@ raiders = "https://media.giphy.com/media/3ofT5yXYtGFv7G3I5O/giphy.gif"
 touchdown = "https://media.giphy.com/media/1434lafyjzMk1y/source.gif"
 osu1 = "https://media.giphy.com/media/291XZD4vUtiuY/giphy.gif"
 osu2 = "https://media.giphy.com/media/14skUVRkuqgekg/source.gif"
+micdrop = "https://media.giphy.com/media/Yt3aZ6wj8AXJK/giphy.gif"
+agile = "https://media.giphy.com/media/n3FEnZX92MekM/giphy.gif"
+ghettoblaster = "https://media.giphy.com/media/WI17euXijqDqU/giphy.gif"
 run_itty(server='wsgiref', host='0.0.0.0', port=10010)
