@@ -9,6 +9,17 @@ from requests.auth import HTTPBasicAuth
 import base64
 import random 
 from tinydb import TinyDB, Query
+import pymongo
+from pymongo import MongoClient
+
+def addgif(gifdict):
+    client = MongoClient('localhost', 27017)
+    db = client.bot_database
+    collection = db.gif_collection
+
+    gifs = db.gifs
+    gif_id = gifs.insert_one(gifdict).inserted_id
+    return gif_id
 
 def eventbriteorder():
       response = requests.get(
@@ -303,6 +314,28 @@ def index(request):
              sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": agile}) 
         elif 'ghettoblaster' in in_message:
              sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": ghettoblaster})
+        elif 'coffee' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": coffee})
+        elif 'jailbreak' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": jailbreak})
+        elif 'welcometotheinternet' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": welcometotheinternet})
+        elif 'somuchwin' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": somuchwin})
+        elif 'mindblown' in in_message: 
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": mindblown})
+        elif 'ready for a beer' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": beerpour})
+        elif 'ready for a drink' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": drinkpour})
+        elif 'addgif' in in_message:
+              gifcmd = in_message.split()
+              gifdict = {}
+              gifdict['tag']=gifcmd[2]
+              gifdict['url']=gifcmd[3]
+              gifid = addgif(gifdict)
+              str(gifid)
+              msg = gifid 
         if msg != None:
             print msg
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
@@ -328,4 +361,11 @@ osu2 = "https://media.giphy.com/media/14skUVRkuqgekg/source.gif"
 micdrop = "https://media.giphy.com/media/Yt3aZ6wj8AXJK/giphy.gif"
 agile = "https://media.giphy.com/media/n3FEnZX92MekM/giphy.gif"
 ghettoblaster = "https://media.giphy.com/media/WI17euXijqDqU/giphy.gif"
+coffee = "https://media.giphy.com/media/oZEBLugoTthxS/giphy.gif"
+jailbreak = "https://media.giphy.com/media/mdyergNCRWFGM/giphy.gif"
+welcometotheinternet = "https://media.giphy.com/media/zthJViY229AMU/giphy.gif"
+somuchwin = "http://s2.quickmeme.com/img/0f/0ff49113f737f6725161e579f345863f0a8b6d82d260aca7a3726c18b760b024.jpg"
+mindblown = "http://www.reactiongifs.com/r/2013/10/tim-and-eric-mind-blown.gif"
+beerpour = "https://media.giphy.com/media/5xtDartUauedjBiErJK/giphy.gif"
+drinkpour = "https://media.giphy.com/media/RuU7Q2mH0n8ac/giphy.gif"
 run_itty(server='wsgiref', host='0.0.0.0', port=10010)
