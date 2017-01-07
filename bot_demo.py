@@ -9,17 +9,6 @@ from requests.auth import HTTPBasicAuth
 import base64
 import random 
 from tinydb import TinyDB, Query
-import pymongo
-from pymongo import MongoClient
-
-def addgif(gifdict):
-    client = MongoClient('localhost', 27017)
-    db = client.bot_database
-    collection = db.gif_collection
-
-    gifs = db.gifs
-    gif_id = gifs.insert_one(gifdict).inserted_id
-    return gif_id
 
 def eventbriteorder():
       response = requests.get(
@@ -328,14 +317,16 @@ def index(request):
              sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": beerpour})
         elif 'ready for a drink' in in_message:
              sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": drinkpour})
-        elif 'addgif' in in_message:
-              gifcmd = in_message.split()
-              gifdict = {}
-              gifdict['tag']=gifcmd[2]
-              gifdict['url']=gifcmd[3]
-              gifid = addgif(gifdict)
-              str(gifid)
-              msg = gifid 
+        elif 'dashboard' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": dashboard})
+        elif 'rickrolled' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": rickrolled})
+        elif 'walrusagrees' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": walrusagrees})
+        elif 'happy friday' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": happyfriday})
+        elif 'moscow mule' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": moscowmule})
         if msg != None:
             print msg
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
@@ -368,4 +359,9 @@ somuchwin = "http://s2.quickmeme.com/img/0f/0ff49113f737f6725161e579f345863f0a8b
 mindblown = "http://www.reactiongifs.com/r/2013/10/tim-and-eric-mind-blown.gif"
 beerpour = "https://media.giphy.com/media/5xtDartUauedjBiErJK/giphy.gif"
 drinkpour = "https://media.giphy.com/media/RuU7Q2mH0n8ac/giphy.gif"
+dashboard = "https://media.giphy.com/media/eYog10JH32Aa4/giphy.gif"
+rickrolled = "https://media.giphy.com/media/SdYKdGBtnTVnO/giphy.gif"
+walrusagrees = "https://media.giphy.com/media/DhFI6BYOHRORq/giphy.gif"
+happyfriday = "https://media.giphy.com/media/sTczweWUTxLqg/giphy.gif"
+moscowmule = "https://media.giphy.com/media/bs4TCToe1x7gY/giphy.gif"
 run_itty(server='wsgiref', host='0.0.0.0', port=10010)
