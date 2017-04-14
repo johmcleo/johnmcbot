@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#test
+#testing
 from itty import *
 import urllib2
 import json
