@@ -4,13 +4,15 @@ FROM ubuntu:14.04
 RUN apt-get -yqq update
 RUN apt-get -yqq install python-pip python-dev
 
-ADD johnmcbot-app /home/ec2-user/code/SparkBotDemo 
-WORKDIR /opt/flask-app
+RUN mkdir /opt/johnmcbot
+WORKDIR /opt/johnmcbot
 
-RUN pip install -r requirements.txt
+COPY ./* /opt/johnmcbot/
+
+RUN pip install -r /opt/johnmcbot/requirements.txt
 
 # expose port
 EXPOSE 10010
 
 # start app
-CMD [ "python", "./bot_demo.py" ]
+CMD [ "python", "/opt/johnmcbot/bot_demo.py" ]

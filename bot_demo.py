@@ -9,7 +9,63 @@ from requests.auth import HTTPBasicAuth
 import base64
 import random 
 from tinydb import TinyDB, Query
+#import acitoolkit.acitoolkit as aci
 
+#def acishowepg():
+#    # Login to APIC
+#    description = ('Simple application that logs on to the APIC'
+#                   ' and displays all of the EPGs.')
+#    creds = aci.Credentials('apic', description)
+#    args = creds.get()
+#    session = aci.Session(args.url, args.login, args.password)
+#    resp = session.login()
+#    if not resp.ok:
+#        print('%% Could not login to APIC')
+#
+#    # Download all of the tenants, app profiles, and EPGs
+#    # and store the names as tuples in a list
+#    data = []
+#    tenants = aci.Tenant.get(session)
+#    for tenant in tenants:
+#        apps = aci.AppProfile.get(session, tenant)
+#        for app in apps:
+#            epgs = aci.EPG.get(session, app, tenant)
+#            for epg in epgs:
+#                data.append((tenant.name, app.name, epg.name))
+
+    # Display the data downloaded
+#    template = "{0:19} {1:20} {2:15}"
+#    print(template.format("TENANT", "APP_PROFILE", "EPG"))
+#    print(template.format("------", "-----------", "---"))
+#    for rec in data:
+#        print(template.format(*rec))
+#    return data
+
+def getpisense():
+    url = 'https://dweet.io/get/latest/dweet/for/databears-pi1'
+    r = requests.get(url)
+
+    binary = r.content
+    output = json.loads(binary)
+
+    numthings = len(output["with"])
+
+    for x in range(0, numthings):
+             temp = output["with"][x]["content"]["temperature"] * 9/5 + 32
+             pres = output["with"][x]["content"]["pressure"] * 0.0295301
+             hum = output["with"][x]["content"]["humidity"]
+             pres = round(pres,1)
+             temp = round(temp,1)
+             hum = round(hum,1)
+             
+    return temp,hum,pres
+
+def brewpeets():
+    r = requests.get('http://69946291.ngrok.io/brew')
+
+def brewbluebottle():
+    r = requests.get('http://ed799fe7.ngrok.io/brew')
+    
 def eventbriteorder():
       response = requests.get(
          "https://www.eventbriteapi.com/v3/users/me/owned_events/?status=live",
@@ -192,6 +248,12 @@ def index(request):
         in_message = in_message.replace(bot_name, '')
         if 'databears' in in_message or "favorite" in in_message:
             msg = "I Love Databears!"
+        elif 'brew coffee peets' in in_message:
+              brewpeets()
+              msg = 'Epic Coffee on the way!'
+        elif 'brew coffee blue bottle' in in_message:
+              brewbluebottle()
+              msg = 'Epic Coffee on the way!'
         elif 'trainingdaystatus' in in_message:
             eventid,eventname = eventbriteorder()
             for i in range(0, len(eventid)):
@@ -327,6 +389,50 @@ def index(request):
              sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": happyfriday})
         elif 'moscow mule' in in_message:
              sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": moscowmule})
+        elif 'kieferkiefer' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": worry})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": freakout})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": nope})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": diva})
+        elif 'tablerabbit' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": glasslicker})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": nathandog})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": puglicker})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": toiletpug})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": wiperpug})
+        elif 'wordvomit' in in_message:
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": elfvomit})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": wordvomit})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": babyvomit})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": passout})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": boring})
+             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "files": wrapitup})
+        elif 'getpisense' in in_message:
+             temp,hum,pres = getpisense()
+             msg += "Temperature:"
+             msg += str(temp)
+             msg += "F"
+             msg += "\n"
+             msg += "Pressure:"
+             msg += str(pres)
+             msg += "in"
+             msg += "\n"
+             msg += "Humidity:"
+             msg += str(hum)
+             msg += '%'
+             msg += "\n"
+             msg += "See this in real time at:https://freeboard.io/board/sG-SNI"
+#        elif 'acishowepg' in in_message:
+#             epgdata = acishowepg()
+#             msg += "ACI EPG's for: sandboxapicdc.cisco.com\n"
+#             for epg in epgdata:
+#	         msg += "\t**Tenant:**\t"
+#                 msg += epg[0]
+#                 msg += "\tApp Profile:\t"
+#                 msg += epg[1]
+#                 msg += "\tEPG:\t"
+#                 msg += epg[2]
+#                 msg += '\n'
         if msg != None:
             print msg
             sendSparkPOST("https://api.ciscospark.com/v1/messages", {"roomId": webhook['data']['roomId'], "text": msg})
@@ -364,4 +470,19 @@ rickrolled = "https://media.giphy.com/media/SdYKdGBtnTVnO/giphy.gif"
 walrusagrees = "https://media.giphy.com/media/DhFI6BYOHRORq/giphy.gif"
 happyfriday = "https://media.giphy.com/media/sTczweWUTxLqg/giphy.gif"
 moscowmule = "https://media.giphy.com/media/bs4TCToe1x7gY/giphy.gif"
+worry = "https://media.giphy.com/media/bEVKYB487Lqxy/giphy.gif"
+freakout = "https://media.giphy.com/media/FwpecpDvcu7vO/giphy.gif"
+nope = "https://media.giphy.com/media/6h4z4b3v6XWxO/giphy.gif"
+diva = "https://media.giphy.com/media/xThuWhoaNyNBjTGERa/giphy.gif"
+glasslicker = "https://media.giphy.com/media/ZB9f1T1hb6jHG/giphy.gif"
+nathandog = "https://media.giphy.com/media/XK9Fpj6DWXNdK/giphy.gif"
+puglicker = "https://media.giphy.com/media/NGALQBUgvmVTa/giphy.gif"
+toiletpug = "https://media.giphy.com/media/qwpe4N4nulVWU/giphy.gif"
+wiperpug = "https://media.giphy.com/media/M5ycS0IuXyOdO/giphy.gif"
+wordvomit = "https://media.giphy.com/media/hJAtglT8jOzPW/giphy.gif"
+elfvomit = "https://media.giphy.com/media/Uw9ohPF8uUik/giphy.gif"
+babyvomit = "https://media.giphy.com/media/12P6AnN6DcQj1S/giphy.gif"
+passout = "https://media.giphy.com/media/LTYT5GTIiAMBa/giphy.gif"
+boring = "https://media.giphy.com/media/z9sFrQMfEME5a/giphy.gif"
+wrapitup = "https://media.giphy.com/media/4PvmF62Tl3KLe/giphy.gif"
 run_itty(server='wsgiref', host='0.0.0.0', port=10010)
