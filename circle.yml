@@ -1,0 +1,3 @@
+test:
+  override:
+    - ./my_testing_script.sh
