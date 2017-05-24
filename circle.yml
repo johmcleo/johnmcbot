@@ -1,5 +1,5 @@
 general:
-  build_dir: /opt/johnmcbot
+  build_dir: johnmcbot
 test:
   override:
     - python ./bot_demo.py
